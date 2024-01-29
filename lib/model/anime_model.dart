@@ -4,6 +4,7 @@ class Anime {
   String? desc;
   String? type;
   String? image;
+  int? episode;
 
   Anime(
       this.id,

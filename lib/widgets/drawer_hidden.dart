@@ -37,6 +37,7 @@ class MyHiddenDrawer extends StatelessWidget {
     ];
 
     return HiddenDrawerMenu(
+      backgroundColorAppBar:Theme.of(context).primaryColor,
         actionsAppBar: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
@@ -47,7 +48,7 @@ class MyHiddenDrawer extends StatelessWidget {
         isTitleCentered: true,
         tittleAppBar:const Text("Anime List",style: TextStyle(color: Colors.indigoAccent)),
         withAutoTittleName: true,
-        elevationAppBar: 0,
+        elevationAppBar: 15,
         screens: screens,
         backgroundColorMenu: Colors.blueAccent);
   }

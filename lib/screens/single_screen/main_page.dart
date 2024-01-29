@@ -26,53 +26,51 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.indigo,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(50))),
-        onPressed: _navigate,
-        child: const Icon(
-          CupertinoIcons.add,
-          color: Colors.white,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(25),
+            child: SalomonBottomBar(
+              backgroundColor: Colors.indigoAccent,
+              currentIndex: _selectedIndex,
+              onTap: (int index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              items: [
+                SalomonBottomBarItem(
+                  activeIcon:const Icon(CupertinoIcons.house_fill),
+                    selectedColor: Colors.yellowAccent,
+                    unselectedColor: Colors.white,
+                    icon:const Icon(CupertinoIcons.home),
+                    title: const Text("Home")),
+                SalomonBottomBarItem(
+                    activeIcon:const Icon(CupertinoIcons.tv_fill),
+                    selectedColor:const Color(0xff1000ff),
+                    unselectedColor: Colors.white,
+                    icon:const Icon(CupertinoIcons.tv),
+                    title:const Text("Watching")),
+                SalomonBottomBarItem(
+                    activeIcon:const Icon(Icons.stop),
+                    selectedColor:const Color(0xffcae8fd),
+                    unselectedColor: Colors.white,
+                    icon:const Icon(CupertinoIcons.stop),
+                    title:const Text("Finished")),
+                SalomonBottomBarItem(
+                  activeIcon:const Icon(CupertinoIcons.heart_fill),
+                    selectedColor: Colors.red,
+                    unselectedColor: Colors.white,
+                    icon:const Icon(CupertinoIcons.heart),
+                    title:const Text("Favourite")),
+              ],
+            ),
+          ),
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: SalomonBottomBar(
-        backgroundColor: Colors.indigoAccent,
-        currentIndex: _selectedIndex,
-        onTap: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        items: [
-          SalomonBottomBarItem(
-            activeIcon:const Icon(CupertinoIcons.house_fill),
-              selectedColor: Colors.yellowAccent,
-              unselectedColor: Colors.white,
-              icon:const Icon(CupertinoIcons.home),
-              title: const Text("Home")),
-          SalomonBottomBarItem(
-              activeIcon:const Icon(CupertinoIcons.tv_fill),
-              selectedColor:const Color(0xff1000ff),
-              unselectedColor: Colors.white,
-              icon:const Icon(CupertinoIcons.tv),
-              title:const Text("Watching")),
-          SalomonBottomBarItem(
-              activeIcon:const Icon(Icons.stop),
-              selectedColor:const Color(0xffcae8fd),
-              unselectedColor: Colors.white,
-              icon:const Icon(CupertinoIcons.stop),
-              title:const Text("Finished")),
-          SalomonBottomBarItem(
-            activeIcon:const Icon(CupertinoIcons.heart_fill),
-              selectedColor: Colors.red,
-              unselectedColor: Colors.white,
-              icon:const Icon(CupertinoIcons.heart),
-              title:const Text("Favourite")),
-        ],
       ),
     );
   }

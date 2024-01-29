@@ -1,12 +1,14 @@
 import 'dart:io';
+import 'package:anime_list_sqflite/widgets/drawer_hidden.dart';
+import 'package:anime_list_sqflite/widgets/my_snackbars.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../db/sql_helper.dart';
 import '../../model/anime_model.dart';
-import 'main_page.dart';
+
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -16,9 +18,11 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
+
+
   final _name = TextEditingController();
   final _desc = TextEditingController();
-  SignTypes _selectedType = SignTypes.warning;
+  SignTypes _selectedType = SignTypes.dub;
 
   final _picker = ImagePicker();
   XFile? _xFile;
@@ -26,6 +30,7 @@ class _AddPageState extends State<AddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: const Text("Add New Rule"),
         actions: [
@@ -75,6 +80,7 @@ class _AddPageState extends State<AddPage> {
             const Gap(20),
             DropdownButtonHideUnderline(
                 child: DropdownButtonFormField<SignTypes>(
+                  focusColor: Colors.lightBlue,
                     borderRadius: BorderRadius.circular(12),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -92,7 +98,7 @@ class _AddPageState extends State<AddPage> {
                     value: _selectedType,
                     items: SignTypes.values
                         .map((e) => DropdownMenuItem(
-                        value: e, child: Text(e.name)))
+                        value: e, child: Text(e.name,style: TextStyle(color: Colors.white))))
                         .toList(),
                     onChanged: (i) {
                       setState(() {
@@ -110,7 +116,7 @@ class _AddPageState extends State<AddPage> {
   }
   Widget _imageSection() {
     return InkWell(
-      onTap: _showBottom,
+      onTap: _showMaterialBottom,
       borderRadius: BorderRadius.circular(12),
       child: Ink(
         decoration: BoxDecoration(
@@ -128,16 +134,50 @@ class _AddPageState extends State<AddPage> {
       ),
     );
   }
-  _showBottom() {
-    showCupertinoModalPopup(context: context, builder: (dialogContext) => CupertinoActionSheet(
-      actions: [
-        CupertinoActionSheetAction(onPressed: () => _pickImage(ImageSource.gallery), child: const Text("Gallery")),
-        CupertinoActionSheetAction(onPressed: () => _pickImage(ImageSource.camera), child: const Text("Camera")),
-        CupertinoActionSheetAction(onPressed: () => Navigator.of(context).pop(), isDestructiveAction: true,
-            child: const Text("Cancel")),
-      ],
-    ));
+
+  _showMaterialBottom(){
+    showDialog(context: (context), builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Choose the method",style: TextStyle(color: Colors.indigo),),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: ()=> _pickImage(ImageSource.gallery),
+              child: Container(
+                height: 50,
+                width: 200,
+                decoration: BoxDecoration(
+                  color: Colors.indigoAccent,
+                  borderRadius: BorderRadius.circular(12)
+                ),
+                child: const Center(child: Text("Gallery",style: TextStyle(color: Colors.white))),
+              ),
+            ),
+            const SizedBox(height: 10,),
+            InkWell(
+              onTap: ()=> _pickImage(ImageSource.camera),
+              child: Container(
+                height: 50,
+                width: 200,
+                decoration: BoxDecoration(
+                  color: Colors.indigoAccent,
+                  borderRadius: BorderRadius.circular(12)
+                ),
+                child: const Center(child: Text("Camera",style: TextStyle(color: Colors.white))),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          CupertinoButton(child: Text("Cancle",style: TextStyle(color: Colors.red),), onPressed: ()=> Navigator.of(context).pop())
+        ],
+      );
+    },);
   }
+
   _pickImage(ImageSource source) async {
     _xFile = null;
     _xFile = await _picker.pickImage(source: source);
@@ -148,14 +188,17 @@ class _AddPageState extends State<AddPage> {
   void _saveNewRule(){
     final newRule = Anime(null,_name.text,_desc.text,_selectedType.toString(),_xFile?.path);
     SqlHelper.saveSign(newRule).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("SAVEDDDDDDDDD")));
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>const MainPage()), (route) => false);
+      ScaffoldMessenger.of(context).showSnackBar(mySaveSnackBar);
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>const MyHiddenDrawer()), (route) => false);
     });
     SqlHelper.getAllSigns();
   }
-}
 
+
+}
 
 enum SignTypes {
-  warning, grant, ban, command,
+  sub, dub, subTVMovie, dubTVMovie,
 }
+
+/// ICONS => Favourite, Watching, Finished, Delete,

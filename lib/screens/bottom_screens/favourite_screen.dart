@@ -10,7 +10,8 @@ class FavouriteScreen extends StatefulWidget {
 class _WatchingScreenState extends State<FavouriteScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       body: Center(child: Text("Favourite")),
     );
   }

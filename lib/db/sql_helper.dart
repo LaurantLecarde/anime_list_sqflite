@@ -5,7 +5,7 @@ class SqlHelper {
   static Future<void> createTable(sql.Database database) async {
     database.execute("""
       CREATE TABLE animes(
-        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
         name TEXT NOT NULL,
         desc TEXT NOT NULL,
         type TEXT NOT NULL,

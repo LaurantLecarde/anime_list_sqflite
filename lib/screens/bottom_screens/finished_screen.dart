@@ -1,3 +1,5 @@
+import 'package:anime_list_sqflite/widgets/my_snackbars.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 
 class FinishedScreen extends StatefulWidget {
@@ -8,10 +10,13 @@ class FinishedScreen extends StatefulWidget {
 }
 
 class _WatchingScreenState extends State<FinishedScreen> {
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text("Finish"),),
+    return  Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: Center(
+        child: Text("Finished")),
     );
   }
 }

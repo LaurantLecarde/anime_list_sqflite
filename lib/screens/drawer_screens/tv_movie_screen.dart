@@ -10,7 +10,8 @@ class TvMoviesScreen extends StatefulWidget {
 class _TvMoviesScreenState extends State<TvMoviesScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       body: Center(
         child: Text("TvMovies"),
       ),
