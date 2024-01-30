@@ -50,6 +50,6 @@ class MyHiddenDrawer extends StatelessWidget {
         withAutoTittleName: true,
         elevationAppBar: 15,
         screens: screens,
-        backgroundColorMenu: Colors.blueAccent);
+        backgroundColorMenu: Colors.black);
   }
 }

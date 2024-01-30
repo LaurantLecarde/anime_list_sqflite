@@ -1,10 +1,14 @@
 import 'dart:io';
 import 'package:anime_list_sqflite/widgets/drawer_hidden.dart';
+import 'package:anime_list_sqflite/widgets/glow_text.dart';
 import 'package:anime_list_sqflite/widgets/my_snackbars.dart';
+import 'package:anime_list_sqflite/widgets/my_textfiled.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_glow/flutter_glow.dart';
 import 'package:gap/gap.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../db/sql_helper.dart';
 import '../../model/anime_model.dart';
@@ -21,7 +25,7 @@ class _AddPageState extends State<AddPage> {
 
 
   final _name = TextEditingController();
-  final _desc = TextEditingController();
+  final _episode = TextEditingController();
   SignTypes _selectedType = SignTypes.dub;
 
   final _picker = ImagePicker();
@@ -32,84 +36,75 @@ class _AddPageState extends State<AddPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        title: const Text("Add New Rule"),
-        actions: [
-          IconButton(onPressed: () {
-            _saveNewRule();
-          }, icon: const Icon(CupertinoIcons.checkmark))
-        ],
+        backgroundColor: Theme.of(context).primaryColor,
+        title: const AppText(text: "Add New Anime"),
+        leading: IconButton(onPressed: ()=>Navigator.of(context).pop(),icon: Icon(CupertinoIcons.back,color: Colors.indigoAccent)),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            const SizedBox(height: 20),
-            _imageSection(),
-            const Gap(20),
-            TextField(
-              controller: _name,
-              decoration: InputDecoration(
-                hintText: "Sign name",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12)
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12)
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12)
-                )
-              ),
-            ),
-            const Gap(20),
-            TextField(
-              controller: _desc,
-              decoration: InputDecoration(
-                hintText: "Description",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)
-                  ),
-                  disabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)
-                  )
-              ),
-            ),
-            const Gap(20),
-            DropdownButtonHideUnderline(
-                child: DropdownButtonFormField<SignTypes>(
-                  focusColor: Colors.lightBlue,
-                    borderRadius: BorderRadius.circular(12),
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.indigo, width: 2),
-                          borderRadius: BorderRadius.circular(12)),
-                      hintText: 'Sign type',
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.black12, width: 2),
-                          borderRadius: BorderRadius.circular(12)),
-                    ),
-                    style: const TextStyle(
-                        fontSize: 14, color: Colors.black87),
-                    value: _selectedType,
-                    items: SignTypes.values
-                        .map((e) => DropdownMenuItem(
-                        value: e, child: Text(e.name,style: TextStyle(color: Colors.white))))
-                        .toList(),
-                    onChanged: (i) {
-                      setState(() {
-                        _selectedType = i!;
-                      });
-                    },
-                    icon: const Icon(
-                      Icons.keyboard_arrow_down_outlined,
-                      color: Color(0xff64748B),
-                    ))),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              const Center(child: AppText(text: "Image")),
+              const Gap(10),
+              Center(child: _imageSection()),
+              const Gap(20),
+              AppText(text: 'Name',),
+              const Gap(10),
+              MyTextField(controller: _name, hintText: "Anime Name", isNumber: false),
+              const Gap(20),
+              AppText(text: "Episodes",),
+              const Gap(10),
+              MyTextField(controller: _episode, hintText: "Anime Episodes", isNumber: true),
+              const Gap(20),
+              AppText(text: "Type"),
+              const Gap(10),
+              DropdownButtonHideUnderline(
+                  child: DropdownButtonFormField<SignTypes>(
+                    focusColor: Colors.lightBlue,
+                      borderRadius: BorderRadius.circular(12),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.indigo, width: 2),
+                            borderRadius: BorderRadius.circular(12)),
+                        hintText: 'Sign type',
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Colors.indigoAccent, width: 2),
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                      style: const TextStyle(
+                          fontSize: 14, color: Colors.indigoAccent),
+                      value: _selectedType,
+                      items: SignTypes.values
+                          .map((e) => DropdownMenuItem(
+                          value: e, child: Text(e.name,style: TextStyle(color: Colors.white))))
+                          .toList(),
+                      onChanged: (i) {
+                        setState(() {
+                          _selectedType = i!;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down_outlined,
+                        color: Color(0xff64748B),
+                      ))),
+        
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.all(8),
+        child: GlowButton(
+          height: 50,
+          borderRadius: BorderRadius.circular(15),
+          onPressed: (){
+            _saveNewRule();},
+          child: Text("Save",style: TextStyle(fontSize: 15,color: Colors.white)),
         ),
       ),
     );
@@ -121,12 +116,13 @@ class _AddPageState extends State<AddPage> {
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.black, width: 2)
+          border: Border.all(color: Colors.indigoAccent, width: 2)
         ),
         child: SizedBox(
-          height: 280,
+          height: 300,
+          width: 200,
           child: Center(
-            child: _xFile == null ? const Icon(CupertinoIcons.photo) : Image.file(
+            child: _xFile == null ? const Icon(CupertinoIcons.photo,color: Colors.white,) : Image.file(
               File(_xFile?.path ?? "") // -> import qil -> dart:io
             ),
           ),
@@ -186,9 +182,9 @@ class _AddPageState extends State<AddPage> {
   }
 
   void _saveNewRule(){
-    final newRule = Anime(null,_name.text,_desc.text,_selectedType.toString(),_xFile?.path);
+    final newRule = Anime(null,_name.text,_episode.text,_selectedType.toString(),_xFile?.path);
     SqlHelper.saveSign(newRule).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(mySaveSnackBar);
+      ScaffoldMessenger.of(context).showSnackBar(showMySnackBar("Saved", "Your anime saved successfully✅", CupertinoColors.activeGreen, ContentType.success));
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>const MyHiddenDrawer()), (route) => false);
     });
     SqlHelper.getAllSigns();
