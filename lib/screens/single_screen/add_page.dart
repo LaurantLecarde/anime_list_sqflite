@@ -3,6 +3,8 @@ import 'package:anime_list_sqflite/widgets/drawer_hidden.dart';
 import 'package:anime_list_sqflite/widgets/glow_text.dart';
 import 'package:anime_list_sqflite/widgets/my_snackbars.dart';
 import 'package:anime_list_sqflite/widgets/my_textfiled.dart';
+import 'package:anime_list_sqflite/widgets/navigator.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +94,6 @@ class _AddPageState extends State<AddPage> {
                         Icons.keyboard_arrow_down_outlined,
                         color: Color(0xff64748B),
                       ))),
-        
             ],
           ),
         ),
@@ -104,26 +105,29 @@ class _AddPageState extends State<AddPage> {
           borderRadius: BorderRadius.circular(15),
           onPressed: (){
             _saveNewRule();},
-          child: Text("Save",style: TextStyle(fontSize: 15,color: Colors.white)),
+          child:  GlowText("Save",style: GoogleFonts.rowdies(fontSize: 20,color: Colors.white)),
         ),
       ),
     );
   }
   Widget _imageSection() {
     return InkWell(
-      onTap: _showMaterialBottom,
+      onTap: _showDeleteDialog,
       borderRadius: BorderRadius.circular(12),
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.indigoAccent, width: 2)
         ),
-        child: SizedBox(
-          height: 300,
-          width: 200,
-          child: Center(
-            child: _xFile == null ? const Icon(CupertinoIcons.photo,color: Colors.white,) : Image.file(
-              File(_xFile?.path ?? "") // -> import qil -> dart:io
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: SizedBox(
+            height: 300,
+            width: 200,
+            child: Center(
+              child: _xFile == null ? const Icon(CupertinoIcons.photo,color: Colors.white,) : Image.file(
+                File(_xFile?.path ?? "",),fit: BoxFit.cover,width: double.infinity,height: double.infinity, // -> import qil -> dart:io
+              ),
             ),
           ),
         ),
@@ -131,50 +135,72 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  _showMaterialBottom(){
-    showDialog(context: (context), builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text("Choose the method",style: TextStyle(color: Colors.indigo),),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
+  _showDeleteDialog() {
+    return AwesomeDialog(
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.indigoAccent,
+      ),
+      width: 400,
+      dialogBackgroundColor: Color(0xff001686),
+      context: context,
+      dialogType: DialogType.question,
+      animType: AnimType.rightSlide,
+      body: Center(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            InkWell(
-              onTap: ()=> _pickImage(ImageSource.gallery),
-              child: Container(
-                height: 50,
-                width: 200,
-                decoration: BoxDecoration(
-                  color: Colors.indigoAccent,
-                  borderRadius: BorderRadius.circular(12)
+            const Gap(10),
+            const Center(child: AppText(text: "Where From Do You Give Images?")),
+            const Gap(20),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: () {pickImage(ImageSource.gallery);popNavigator(context);},
+                  child: GlowContainer(
+                    height: 50,
+                    width: 100,
+                    color: Colors.indigoAccent,
+                    borderRadius: BorderRadius.circular(12),
+                    child: const Center(
+                        child:
+                        Text("Gallery", style: TextStyle(color: Colors.white))),
+                  ),
                 ),
-                child: const Center(child: Text("Gallery",style: TextStyle(color: Colors.white))),
-              ),
-            ),
-            const SizedBox(height: 10,),
-            InkWell(
-              onTap: ()=> _pickImage(ImageSource.camera),
-              child: Container(
-                height: 50,
-                width: 200,
-                decoration: BoxDecoration(
-                  color: Colors.indigoAccent,
-                  borderRadius: BorderRadius.circular(12)
+                const SizedBox(
+                  width: 20,
                 ),
-                child: const Center(child: Text("Camera",style: TextStyle(color: Colors.white))),
-              ),
+                InkWell(
+                  onTap: (){ pickImage(ImageSource.camera);popNavigator(context);},
+                  child: GlowContainer(
+                    height: 50,
+                    width: 100,
+                    color: Colors.indigoAccent,
+                    borderRadius: BorderRadius.circular(12),
+                    child: const Center(
+                        child: Text("Camera", style: TextStyle(color: Colors.white))),
+                  ),
+                ),
+              ],
             ),
+            const Gap(20),
+            InkWell(
+                onTap: (){
+                  popNavigator(context);
+                },
+                child: GlowText("Cancle",style: GoogleFonts.rowdies(color: Colors.red,fontSize: 20),glowColor: Colors.red)),
+            const Gap(10),
           ],
         ),
-        actions: [
-          CupertinoButton(child: Text("Cancle",style: TextStyle(color: Colors.red),), onPressed: ()=> Navigator.of(context).pop())
-        ],
-      );
-    },);
+      ),
+    )..show();
   }
 
-  _pickImage(ImageSource source) async {
+  pickImage(ImageSource source) async {
     _xFile = null;
     _xFile = await _picker.pickImage(source: source);
     setState(() {

@@ -2,12 +2,15 @@ import 'dart:io';
 import 'package:anime_list_sqflite/screens/single_screen/add_page.dart';
 import 'package:anime_list_sqflite/widgets/my_snackbars.dart';
 import 'package:anime_list_sqflite/widgets/navigator.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
+import 'package:gap/gap.dart';
 import '../../db/sql_helper.dart';
 import '../../model/anime_model.dart';
+import '../../widgets/glow_text.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,24 +41,66 @@ class _HomePageState extends State<HomePage> {
   void _deleteIt(int? id, BuildContext context) {
     SqlHelper.deleteSign(id).then((value) {
       setState(() {});
-      ScaffoldMessenger.of(context)
-          .showSnackBar(showMySnackBar("Deleted", "Anime Deleted Successfully", Colors.red, ContentType.warning));
+      ScaffoldMessenger.of(context).showSnackBar(showMySnackBar("Deleted",
+          "Anime Deleted Successfully", Colors.red, ContentType.warning));
     });
   }
 
-  void _showDialog(Anime anime) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              content: const Text("Delete"),
-              actions: [
-                ElevatedButton(
-                    onPressed: () {
-                      _deleteIt(anime.id, context);
-                    },
-                    child: const Text("DELETE"))
-              ],
-            ));
+  _showDeleteDialog(Anime anime) {
+    return AwesomeDialog(
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.indigoAccent,
+      ),
+      width: 400,
+      dialogBackgroundColor: const Color(0xff001686),
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.rightSlide,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Gap(20),
+          const AppText(text: "Are You Sure You Wanna Delete "),
+          const Gap(20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _unDeleteButton(),
+              _deleteButton(anime),
+            ],
+          ),
+          const Gap(30),
+        ],
+      ),
+    )..show();
+  }
+
+  _deleteButton(Anime anime) {
+    return GlowButton(
+        color: Colors.red,
+        glowColor: Colors.red,
+        width: 150,
+        height: 50,
+        child: const Center(child: Text("Yes, Delete")),
+        onPressed: () {
+          _deleteIt(anime.id, context);
+          popNavigator(context);
+        });
+  }
+
+  _unDeleteButton() {
+    return GlowButton(
+        color: Colors.indigoAccent,
+        glowColor: Colors.indigoAccent,
+        width: 150,
+        height: 50,
+        child: const Center(child: Text("No,Don't Delete")),
+        onPressed: () {
+          popNavigator(context);
+        });
   }
 
   _allAnimeGet() {
@@ -77,10 +122,7 @@ class _HomePageState extends State<HomePage> {
                   final data = list?[index];
                   return GlowContainer(
                     borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      width: 2,
-                      color: Colors.white
-                    ),
+                    border: Border.all(width: 2, color: Colors.white),
                     child: InkWell(
                       onTap: () {},
                       child: SizedBox(
@@ -95,10 +137,36 @@ class _HomePageState extends State<HomePage> {
                               width: double.infinity,
                               height: double.infinity,
                             ),
+                            Positioned.fill(child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    colors: [
+                                      Colors.black.withOpacity(1.0),
+                                      Colors.black.withOpacity(0.7),
+                                      Colors.black.withOpacity(0.5),
+                                      Colors.black.withOpacity(0.0),
+                                    ]
+                                  )
+                                ),
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      AppText(text: data?.name ?? ""),
+                                      AppText(text: '${data?.desc}')
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )),
                             Positioned(
-                              top: 0,
-                              right: 0,
-                                child: _columIcons(data!))
+                                top: 0, right: 0, child: _columIcons(data!)),
                           ]),
                         ),
                       ),
@@ -119,27 +187,37 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-  _columIcons(Anime anime){
+
+  _columIcons(Anime anime) {
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Container(
-       decoration: BoxDecoration(
-         color: Colors.black45,
-         // color: Colors.white70,
-         borderRadius: BorderRadius.circular(25),
-       ),
+        decoration: BoxDecoration(
+          color: Colors.black45,
+          // color: Colors.white70,
+          borderRadius: BorderRadius.circular(25),
+        ),
         child: Column(
           children: [
-            IconButton(onPressed: (){
-              _showDialog(anime);
-            }, icon:const GlowIcon(CupertinoIcons.heart,color: Colors.red)),
-            IconButton(onPressed: (){_showDialog(anime);}, icon:const GlowIcon(CupertinoIcons.tv,color: Colors.indigoAccent)),
-            IconButton(onPressed: (){_showDialog(anime);}, icon:const GlowIcon(CupertinoIcons.stop,color: Colors.yellowAccent)),
-            IconButton(onPressed: (){
-              setState(() {
-                _showDialog(anime);
-              });
-            }, icon:const GlowIcon(CupertinoIcons.delete,color: Colors.red)),
+            IconButton(
+                onPressed: () {
+                },
+                icon: const GlowIcon(CupertinoIcons.heart, color: Colors.red)),
+            IconButton(
+                onPressed: () {
+                },
+                icon: const GlowIcon(CupertinoIcons.tv,
+                    color: Colors.indigoAccent)),
+            IconButton(
+                onPressed: () {
+                },
+                icon: const GlowIcon(CupertinoIcons.stop,
+                    color: Colors.yellowAccent)),
+            IconButton(
+                onPressed: () {
+                  _showDeleteDialog(anime);
+                },
+                icon: const GlowIcon(CupertinoIcons.delete, color: Colors.red)),
           ],
         ),
       ),

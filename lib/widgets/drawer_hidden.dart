@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_glow/flutter_glow.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hidden_drawer_menu/hidden_drawer_menu.dart';
 import 'package:flutter/material.dart';
 import '../screens/drawer_screens/manga_screen.dart';
@@ -16,21 +18,21 @@ class MyHiddenDrawer extends StatelessWidget {
       ScreenHiddenDrawer(
           ItemHiddenMenu(
             name: "Anime Page",
-            baseStyle: TextStyle(color: Colors.indigoAccent.shade400,fontWeight: FontWeight.bold,fontSize: 20),
+            baseStyle: GoogleFonts.rowdies(color: Colors.indigoAccent.shade400,fontWeight: FontWeight.bold,fontSize: 20),
             selectedStyle: const TextStyle(color: Colors.white),
           ),
           const MainPage()),
       ScreenHiddenDrawer(
           ItemHiddenMenu(
             name: "Manga Page",
-            baseStyle: TextStyle(color: Colors.indigoAccent.shade400,fontWeight: FontWeight.bold,fontSize: 20),
+            baseStyle: GoogleFonts.rowdies(color: Colors.indigoAccent.shade400,fontWeight: FontWeight.bold,fontSize: 20),
             selectedStyle: const TextStyle(color: Colors.white),
           ),
           const MangaScreen()),
       ScreenHiddenDrawer(
           ItemHiddenMenu(
             name: "TV Movies Page",
-            baseStyle: TextStyle( color:Colors.indigoAccent.shade400,fontWeight: FontWeight.bold,fontSize: 20),
+            baseStyle: GoogleFonts.rowdies( color:Colors.indigoAccent.shade400,fontWeight: FontWeight.bold,fontSize: 20),
             selectedStyle: const TextStyle(color: Colors.white),
           ),
           const TvMoviesScreen()),
@@ -41,12 +43,14 @@ class MyHiddenDrawer extends StatelessWidget {
         actionsAppBar: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: IconButton(onPressed: ()=>navigator(context,const SearchScreen()), icon: const Icon(CupertinoIcons.search,color: Colors.indigoAccent,)),
+            child: InkWell(
+                onTap: ()=>navigator(context,const SearchScreen()),
+                child:const GlowIcon(CupertinoIcons.search,color: Colors.indigoAccent,glowColor: Colors.indigoAccent)),
           )
         ],
         leadingAppBar:const Icon(Icons.format_list_bulleted,color: Colors.indigoAccent,),
         isTitleCentered: true,
-        tittleAppBar:const Text("Anime List",style: TextStyle(color: Colors.indigoAccent)),
+        tittleAppBar: GlowText("Anime List",style: GoogleFonts.rowdies(color: Colors.indigoAccent),glowColor: Colors.indigoAccent,),
         withAutoTittleName: true,
         elevationAppBar: 15,
         screens: screens,
