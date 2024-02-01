@@ -40,7 +40,7 @@ class _AddPageState extends State<AddPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: const AppText(text: "Add New Anime"),
-        leading: IconButton(onPressed: ()=>Navigator.of(context).pop(),icon: Icon(CupertinoIcons.back,color: Colors.indigoAccent)),
+        leading: IconButton(onPressed: ()=>Navigator.of(context).pop(),icon: const Icon(CupertinoIcons.back,color: Colors.indigoAccent)),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -53,15 +53,15 @@ class _AddPageState extends State<AddPage> {
               const Gap(10),
               Center(child: _imageSection()),
               const Gap(20),
-              AppText(text: 'Name',),
+              const AppText(text: 'Name',),
               const Gap(10),
               MyTextField(controller: _name, hintText: "Anime Name", isNumber: false),
               const Gap(20),
-              AppText(text: "Episodes",),
+              const AppText(text: "Episodes",),
               const Gap(10),
               MyTextField(controller: _episode, hintText: "Anime Episodes", isNumber: true),
               const Gap(20),
-              AppText(text: "Type"),
+              const AppText(text: "Type"),
               const Gap(10),
               DropdownButtonHideUnderline(
                   child: DropdownButtonFormField<SignTypes>(
@@ -72,7 +72,7 @@ class _AddPageState extends State<AddPage> {
                             borderSide: const BorderSide(
                                 color: Colors.indigo, width: 2),
                             borderRadius: BorderRadius.circular(12)),
-                        hintText: 'Sign type',
+                        hintText: 'Anime type',
                         enabledBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                                 color: Colors.indigoAccent, width: 2),
@@ -83,7 +83,7 @@ class _AddPageState extends State<AddPage> {
                       value: _selectedType,
                       items: SignTypes.values
                           .map((e) => DropdownMenuItem(
-                          value: e, child: Text(e.name,style: TextStyle(color: Colors.white))))
+                          value: e, child: Text(e.name,style: const TextStyle(color: Colors.white))))
                           .toList(),
                       onChanged: (i) {
                         setState(() {
@@ -99,7 +99,7 @@ class _AddPageState extends State<AddPage> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: GlowButton(
           height: 50,
           borderRadius: BorderRadius.circular(15),
@@ -142,7 +142,7 @@ class _AddPageState extends State<AddPage> {
         color: Colors.indigoAccent,
       ),
       width: 400,
-      dialogBackgroundColor: Color(0xff001686),
+      dialogBackgroundColor: const Color(0xff001686),
       context: context,
       dialogType: DialogType.question,
       animType: AnimType.rightSlide,
@@ -208,12 +208,12 @@ class _AddPageState extends State<AddPage> {
   }
 
   void _saveNewRule(){
-    final newRule = Anime(null,_name.text,_episode.text,_selectedType.toString(),_xFile?.path);
-    SqlHelper.saveSign(newRule).then((value) {
+    final newAnime = Anime(null,_name.text,_episode.text,_selectedType.toString(),_xFile?.path,false);
+    SqlHelper.saveAnime(newAnime).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(showMySnackBar("Saved", "Your anime saved successfully✅", CupertinoColors.activeGreen, ContentType.success));
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>const MyHiddenDrawer()), (route) => false);
     });
-    SqlHelper.getAllSigns();
+    SqlHelper.getAllAnimes();
   }
 
 

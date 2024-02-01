@@ -7,9 +7,21 @@ class SqlHelper {
       CREATE TABLE animes(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
         name TEXT NOT NULL,
-        desc TEXT NOT NULL,
+        episodes TEXT NOT NULL,
         type TEXT NOT NULL,
-        image TEXT NOT NULL
+        image TEXT NOT NULL,
+        animeIconTapped BOOL NOT NULL
+       )
+      """
+    );
+    database.execute("""
+      CREATE TABLE favouriteAnimes(
+        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+        name TEXT NOT NULL,
+        episodes TEXT NOT NULL,
+        type TEXT NOT NULL,
+        image TEXT NOT NULL,
+        animeIconTapped BOOL NOT NULL
        )
       """
     );
@@ -18,26 +30,29 @@ class SqlHelper {
   static Future<sql.Database> db() async {
     return sql.openDatabase(
         "animes.db",
-        version: 2,
+        version: 6,
         onCreate: (database, version) async {
           return createTable(database);
         }
     );
   }
-  static Future<void> saveSign(Anime anime) async {
+
+  ///TODO: All Anime Workplace
+
+  static Future<void> saveAnime(Anime anime) async {
     final db = await SqlHelper.db();
     await db.insert('animes', anime.toJson());
   }
-  static Future<List<Anime>> getAllSigns() async {
+  static Future<List<Anime>> getAllAnimes() async {
     final db = await SqlHelper.db();
     final maps = await db.query('animes');
     return maps.map((e) => Anime.fromJson(e)).toList();
   }
-  static Future<void> deleteSign(int? id) async {
+  static Future<void> deleteAnime(int? id) async {
     final db = await SqlHelper.db();
     await db.delete('animes', where: "id = ?", whereArgs: [id]);
   }
-  static Future<void> updateSign(int? id, Anime anime) async {
+  static Future<void> updateAnime(int? id, Anime anime) async {
     final db = await SqlHelper.db();
     await db.update("animes", anime.toJson(), where: "id = ?", whereArgs: [id]);
   }
@@ -45,4 +60,22 @@ class SqlHelper {
     final db = await SqlHelper.db();
     await db.query("DELETE FROM animes");
   }
+
+  ///TODO: Favourite Anime Workplace
+
+  static Future<void> saveFavourite(Anime anime) async {
+    final db = await SqlHelper.db();
+    await db.insert('favouriteAnimes', anime.toJson());
+  }
+  static Future<List<Anime>> getAllFavouriteAnimes() async {
+    final db = await SqlHelper.db();
+    final maps = await db.query('favouriteAnimes');
+    return maps.map((e) => Anime.fromJson(e)).toList();
+  }
+  static Future<void> deleteFavouriteAnime(int? id) async {
+    final db = await SqlHelper.db();
+    await db.delete('favouriteAnimes',where: "id = ?",whereArgs: [id]);
+  }
+
+
 }

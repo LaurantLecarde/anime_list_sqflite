@@ -15,7 +15,7 @@ class _WatchingScreenState extends State<FinishedScreen> {
   Widget build(BuildContext context) {
     return  Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      body: Center(
+      body: const Center(
         child: Text("Finished")),
     );
   }

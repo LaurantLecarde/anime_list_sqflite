@@ -10,6 +10,7 @@ import 'package:flutter_glow/flutter_glow.dart';
 import 'package:gap/gap.dart';
 import '../../db/sql_helper.dart';
 import '../../model/anime_model.dart';
+import '../../widgets/drawer_hidden.dart';
 import '../../widgets/glow_text.dart';
 
 class HomePage extends StatefulWidget {
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _deleteIt(int? id, BuildContext context) {
-    SqlHelper.deleteSign(id).then((value) {
+    SqlHelper.deleteAnime(id).then((value) {
       setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(showMySnackBar("Deleted",
           "Anime Deleted Successfully", Colors.red, ContentType.warning));
@@ -105,7 +106,7 @@ class _HomePageState extends State<HomePage> {
 
   _allAnimeGet() {
     return FutureBuilder(
-      future: SqlHelper.getAllSigns(),
+      future: SqlHelper.getAllAnimes(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final list = snapshot.data?.reversed.toList();
@@ -137,29 +138,29 @@ class _HomePageState extends State<HomePage> {
                               width: double.infinity,
                               height: double.infinity,
                             ),
-                            Positioned.fill(child: Align(
+                            Positioned.fill(
+                                child: Align(
                               alignment: Alignment.bottomCenter,
                               child: Container(
                                 height: 150,
                                 decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                      begin: Alignment.bottomCenter,
-                                      end: Alignment.topCenter,
-                                    colors: [
+                                    gradient: LinearGradient(
+                                        begin: Alignment.bottomCenter,
+                                        end: Alignment.topCenter,
+                                        colors: [
                                       Colors.black.withOpacity(1.0),
                                       Colors.black.withOpacity(0.7),
                                       Colors.black.withOpacity(0.5),
                                       Colors.black.withOpacity(0.0),
-                                    ]
-                                  )
-                                ),
+                                    ])),
                                 child: Center(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       AppText(text: data?.name ?? ""),
-                                      AppText(text: '${data?.desc}')
+                                      AppText(text: '${data?.episodes}')
                                     ],
                                   ),
                                 ),
@@ -174,7 +175,8 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
           );
-        } else {
+        }
+        else if (snapshot.data?.isEmpty == true) {
           return const Center(
               child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -183,6 +185,8 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(color: Colors.blueAccent)),
             ],
           ));
+        } else {
+          return const Center(child: CupertinoActivityIndicator());
         }
       },
     );
@@ -201,16 +205,18 @@ class _HomePageState extends State<HomePage> {
           children: [
             IconButton(
                 onPressed: () {
+                  anime.animeIconTapped = !anime.animeIconTapped;
+                  anime.animeIconTapped == true
+                      ? _saveFavouriteAnime(anime)
+                      : doNothing();
                 },
                 icon: const GlowIcon(CupertinoIcons.heart, color: Colors.red)),
             IconButton(
-                onPressed: () {
-                },
+                onPressed: () {},
                 icon: const GlowIcon(CupertinoIcons.tv,
                     color: Colors.indigoAccent)),
             IconButton(
-                onPressed: () {
-                },
+                onPressed: () {},
                 icon: const GlowIcon(CupertinoIcons.stop,
                     color: Colors.yellowAccent)),
             IconButton(
@@ -222,5 +228,25 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  doNothing() {}
+
+  void _saveFavouriteAnime(Anime anime) {
+    final newFavouriteAnime =
+        Anime(null, anime.name, anime.episodes, anime.type, anime.image, true);
+    if (newFavouriteAnime.animeIconTapped == true) {
+      SqlHelper.saveFavourite(newFavouriteAnime).then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(showMySnackBar(
+            "Added",
+            "Your anime added successfully✅",
+            CupertinoColors.activeGreen,
+            ContentType.success));
+        Navigator.of(context).pushAndRemoveUntil(
+            CupertinoPageRoute(builder: (context) => const MyHiddenDrawer()),
+            (route) => false);
+      });
+    }
+    SqlHelper.getAllFavouriteAnimes();
   }
 }
