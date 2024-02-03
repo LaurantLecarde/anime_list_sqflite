@@ -4,10 +4,10 @@ class Anime {
   String? episodes;
   String? type;
   String? image;
-  bool animeIconTapped = false;
+  // bool animeIconTapped = false;
 
   Anime(this.id, this.name, this.episodes, this.type, this.image,
-      this.animeIconTapped);
+      );
 
   Map<String, dynamic> toJson() {
     return {
@@ -16,7 +16,6 @@ class Anime {
       'episodes': episodes,
       'type': type,
       'image': image,
-      'animeIconTapped': animeIconTapped
     };
   }
 
@@ -25,6 +24,6 @@ class Anime {
         name = json['name'],
         episodes = json['episodes'],
         type = json['type'],
-        image = json['image'],
-        animeIconTapped = bool.parse(json['animeIconTapped']);
+        image = json['image'];
 }
+

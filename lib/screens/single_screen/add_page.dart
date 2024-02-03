@@ -104,7 +104,7 @@ class _AddPageState extends State<AddPage> {
           height: 50,
           borderRadius: BorderRadius.circular(15),
           onPressed: (){
-            _saveNewRule();},
+            _saveNewAnime();},
           child:  GlowText("Save",style: GoogleFonts.rowdies(fontSize: 20,color: Colors.white)),
         ),
       ),
@@ -207,13 +207,14 @@ class _AddPageState extends State<AddPage> {
     });
   }
 
-  void _saveNewRule(){
-    final newAnime = Anime(null,_name.text,_episode.text,_selectedType.toString(),_xFile?.path,false);
+  void _saveNewAnime(){
+    final newAnime = Anime(null,_name.text,_episode.text,_selectedType.toString(),_xFile?.path);
     SqlHelper.saveAnime(newAnime).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(showMySnackBar("Saved", "Your anime saved successfully✅", CupertinoColors.activeGreen, ContentType.success));
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>const MyHiddenDrawer()), (route) => false);
     });
     SqlHelper.getAllAnimes();
+    print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO ${newAnime.toString()}");
   }
 
 

@@ -204,11 +204,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             IconButton(
-                onPressed: () {
-                  anime.animeIconTapped = !anime.animeIconTapped;
-                  anime.animeIconTapped == true
-                      ? _saveFavouriteAnime(anime)
-                      : doNothing();
+                onPressed: () {_saveFavouriteAnime(anime);
                 },
                 icon: const GlowIcon(CupertinoIcons.heart, color: Colors.red)),
             IconButton(
@@ -234,8 +230,8 @@ class _HomePageState extends State<HomePage> {
 
   void _saveFavouriteAnime(Anime anime) {
     final newFavouriteAnime =
-        Anime(null, anime.name, anime.episodes, anime.type, anime.image, true);
-    if (newFavouriteAnime.animeIconTapped == true) {
+        Anime(null, anime.name, anime.episodes, anime.type, anime.image,);
+
       SqlHelper.saveFavourite(newFavouriteAnime).then((value) {
         ScaffoldMessenger.of(context).showSnackBar(showMySnackBar(
             "Added",
@@ -246,7 +242,6 @@ class _HomePageState extends State<HomePage> {
             CupertinoPageRoute(builder: (context) => const MyHiddenDrawer()),
             (route) => false);
       });
-    }
     SqlHelper.getAllFavouriteAnimes();
   }
 }

@@ -10,7 +10,6 @@ class SqlHelper {
         episodes TEXT NOT NULL,
         type TEXT NOT NULL,
         image TEXT NOT NULL,
-        animeIconTapped BOOL NOT NULL
        )
       """
     );
@@ -21,7 +20,6 @@ class SqlHelper {
         episodes TEXT NOT NULL,
         type TEXT NOT NULL,
         image TEXT NOT NULL,
-        animeIconTapped BOOL NOT NULL
        )
       """
     );
@@ -30,7 +28,7 @@ class SqlHelper {
   static Future<sql.Database> db() async {
     return sql.openDatabase(
         "animes.db",
-        version: 6,
+        version: 7,
         onCreate: (database, version) async {
           return createTable(database);
         }
