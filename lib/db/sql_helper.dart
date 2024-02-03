@@ -9,7 +9,7 @@ class SqlHelper {
         name TEXT NOT NULL,
         episodes TEXT NOT NULL,
         type TEXT NOT NULL,
-        image TEXT NOT NULL,
+        image TEXT NOT NULL
        )
       """
     );
@@ -19,7 +19,7 @@ class SqlHelper {
         name TEXT NOT NULL,
         episodes TEXT NOT NULL,
         type TEXT NOT NULL,
-        image TEXT NOT NULL,
+        image TEXT NOT NULL
        )
       """
     );
@@ -27,8 +27,8 @@ class SqlHelper {
 
   static Future<sql.Database> db() async {
     return sql.openDatabase(
-        "animes.db",
-        version: 7,
+        "anime.db",
+        version: 8,
         onCreate: (database, version) async {
           return createTable(database);
         }
@@ -74,6 +74,4 @@ class SqlHelper {
     final db = await SqlHelper.db();
     await db.delete('favouriteAnimes',where: "id = ?",whereArgs: [id]);
   }
-
-
 }

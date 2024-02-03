@@ -78,7 +78,6 @@ class _HomePageState extends State<HomePage> {
       ),
     )..show();
   }
-
   _deleteButton(Anime anime) {
     return GlowButton(
         color: Colors.red,
@@ -91,7 +90,6 @@ class _HomePageState extends State<HomePage> {
           popNavigator(context);
         });
   }
-
   _unDeleteButton() {
     return GlowButton(
         color: Colors.indigoAccent,
@@ -103,7 +101,6 @@ class _HomePageState extends State<HomePage> {
           popNavigator(context);
         });
   }
-
   _allAnimeGet() {
     return FutureBuilder(
       future: SqlHelper.getAllAnimes(),
@@ -191,7 +188,6 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
   _columIcons(Anime anime) {
     return Padding(
       padding: const EdgeInsets.all(3.0),
@@ -225,23 +221,14 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
   doNothing() {}
-
   void _saveFavouriteAnime(Anime anime) {
     final newFavouriteAnime =
-        Anime(null, anime.name, anime.episodes, anime.type, anime.image,);
-
-      SqlHelper.saveFavourite(newFavouriteAnime).then((value) {
-        ScaffoldMessenger.of(context).showSnackBar(showMySnackBar(
-            "Added",
-            "Your anime added successfully✅",
-            CupertinoColors.activeGreen,
-            ContentType.success));
-        Navigator.of(context).pushAndRemoveUntil(
-            CupertinoPageRoute(builder: (context) => const MyHiddenDrawer()),
-            (route) => false);
-      });
+        Anime(null, anime.name, anime.episodes, anime.type, anime.image);
+      SqlHelper.saveFavourite(newFavouriteAnime);
     SqlHelper.getAllFavouriteAnimes();
+  }
+  _removeFromFavourites(Anime anime){
+    SqlHelper.deleteFavouriteAnime(anime.id);
   }
 }
