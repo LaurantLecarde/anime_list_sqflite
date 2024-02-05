@@ -1,3 +1,4 @@
+import 'package:anime_list_sqflite/screens/drawer_screens/settings_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,25 +18,31 @@ class MyHiddenDrawer extends StatelessWidget {
     var screens = <ScreenHiddenDrawer>[
       ScreenHiddenDrawer(
           ItemHiddenMenu(
-            name: "Anime Page",
+            name: "👑 Anime Page",
             baseStyle: GoogleFonts.rowdies(color: Colors.indigoAccent.shade400,fontWeight: FontWeight.bold,fontSize: 20),
             selectedStyle: const TextStyle(color: Colors.white),
           ),
           const MainPage()),
       ScreenHiddenDrawer(
           ItemHiddenMenu(
-            name: "Manga Page",
+            name: "📖 Manga Page",
             baseStyle: GoogleFonts.rowdies(color: Colors.indigoAccent.shade400,fontWeight: FontWeight.bold,fontSize: 20),
             selectedStyle: const TextStyle(color: Colors.white),
           ),
           const MangaScreen()),
       ScreenHiddenDrawer(
           ItemHiddenMenu(
-            name: "TV Movies Page",
+            name: "📺 TV Movies Page",
             baseStyle: GoogleFonts.rowdies( color:Colors.indigoAccent.shade400,fontWeight: FontWeight.bold,fontSize: 20),
             selectedStyle: const TextStyle(color: Colors.white),
           ),
-          const TvMoviesScreen()),
+          const TvMoviesScreen()),ScreenHiddenDrawer(
+          ItemHiddenMenu(
+            name: "⚙️ Settings",
+            baseStyle: GoogleFonts.rowdies( color:Colors.indigoAccent.shade400,fontWeight: FontWeight.bold,fontSize: 20),
+            selectedStyle: const TextStyle(color: Colors.white),
+          ),
+          const SettingsScreen()),
     ];
 
     return HiddenDrawerMenu(
@@ -50,7 +57,7 @@ class MyHiddenDrawer extends StatelessWidget {
         ],
         leadingAppBar:const Icon(Icons.format_list_bulleted,color: Colors.indigoAccent,),
         isTitleCentered: true,
-        tittleAppBar: GlowText("Anime List",style: GoogleFonts.rowdies(color: Colors.indigoAccent),glowColor: Colors.indigoAccent,),
+        tittleAppBar: GlowText("AniMania",style: GoogleFonts.rowdies(color: Colors.indigoAccent),glowColor: Colors.indigoAccent,),
         withAutoTittleName: true,
         elevationAppBar: 15,
         screens: screens,

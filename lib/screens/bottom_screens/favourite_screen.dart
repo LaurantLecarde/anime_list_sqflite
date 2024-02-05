@@ -107,7 +107,7 @@ class _WatchingScreenState extends State<FavouriteScreen> {
                 ],
               ));
         }else{
-          return const Center(child: CupertinoActivityIndicator());
+          return const Center(child: CupertinoActivityIndicator(radius: 15,color: CupertinoColors.activeGreen));
         }
       },
     );
@@ -139,7 +139,7 @@ class _WatchingScreenState extends State<FavouriteScreen> {
                     color: Colors.yellowAccent)),
             IconButton(
                 onPressed: () {
-                  _showDeleteDialog(anime);
+                  // _showDeleteDialog(anime);
                 },
                 icon: const GlowIcon(CupertinoIcons.delete, color: Colors.red)),
           ],

@@ -15,7 +15,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../db/sql_helper.dart';
 import '../../model/anime_model.dart';
 
-
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
 
@@ -24,10 +23,9 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
-
-
   final _name = TextEditingController();
   final _episode = TextEditingController();
+  final _season = TextEditingController();
   SignTypes _selectedType = SignTypes.dub;
 
   final _picker = ImagePicker();
@@ -35,12 +33,15 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: const AppText(text: "Add New Anime"),
-        leading: IconButton(onPressed: ()=>Navigator.of(context).pop(),icon: const Icon(CupertinoIcons.back,color: Colors.indigoAccent)),
+        leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(CupertinoIcons.back, color: Colors.indigoAccent)),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -53,19 +54,53 @@ class _AddPageState extends State<AddPage> {
               const Gap(10),
               Center(child: _imageSection()),
               const Gap(20),
-              const AppText(text: 'Name',),
+              const AppText(
+                text: 'Name:',
+              ),
               const Gap(10),
-              MyTextField(controller: _name, hintText: "Anime Name", isNumber: false),
+              MyTextField(
+                  controller: _name, hintText: "Anime Name", isNumber: false),
               const Gap(20),
-              const AppText(text: "Episodes",),
-              const Gap(10),
-              MyTextField(controller: _episode, hintText: "Anime Episodes", isNumber: true),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [const AppText(
+                      text: "Episodes:",
+                    ),
+                      const Gap(10),
+                      SizedBox(
+                        width: 175,
+                        height: 60,
+                        child: MyTextField(
+                            controller: _episode,
+                            hintText: "Anime Episodes",
+                            isNumber: true),
+                      ),],
+                  ),
+                  const Gap(20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText(text: "Season:"),
+                      const Gap(10),
+                      SizedBox(
+                        width: 175,
+                        height: 60,
+                        child: MyTextField(
+                            controller: _season, hintText: "Anime Season", isNumber: true),
+                      ),
+                    ],
+                  )
+                ],
+              ),
               const Gap(20),
               const AppText(text: "Type"),
               const Gap(10),
               DropdownButtonHideUnderline(
                   child: DropdownButtonFormField<SignTypes>(
-                    focusColor: Colors.lightBlue,
+                      focusColor: Colors.lightBlue,
                       borderRadius: BorderRadius.circular(12),
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -83,7 +118,9 @@ class _AddPageState extends State<AddPage> {
                       value: _selectedType,
                       items: SignTypes.values
                           .map((e) => DropdownMenuItem(
-                          value: e, child: Text(e.name,style: const TextStyle(color: Colors.white))))
+                              value: e,
+                              child: Text(e.name,
+                                  style: const TextStyle(color: Colors.white))))
                           .toList(),
                       onChanged: (i) {
                         setState(() {
@@ -103,31 +140,43 @@ class _AddPageState extends State<AddPage> {
         child: GlowButton(
           height: 50,
           borderRadius: BorderRadius.circular(15),
-          onPressed: (){
-            _saveNewAnime();},
-          child:  GlowText("Save",style: GoogleFonts.rowdies(fontSize: 20,color: Colors.white)),
+          onPressed: () {
+            _saveNewAnime();
+          },
+          child: GlowText("Save",
+              style: GoogleFonts.rowdies(fontSize: 20, color: Colors.white)),
         ),
       ),
     );
   }
+
   Widget _imageSection() {
     return InkWell(
       onTap: _showDeleteDialog,
       borderRadius: BorderRadius.circular(12),
       child: Ink(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.indigoAccent, width: 2)
-        ),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.indigoAccent, width: 2)),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
           child: SizedBox(
             height: 300,
             width: 200,
             child: Center(
-              child: _xFile == null ? const Icon(CupertinoIcons.photo,color: Colors.white,) : Image.file(
-                File(_xFile?.path ?? "",),fit: BoxFit.cover,width: double.infinity,height: double.infinity, // -> import qil -> dart:io
-              ),
+              child: _xFile == null
+                  ? const Icon(
+                      CupertinoIcons.photo,
+                      color: Colors.white,
+                    )
+                  : Image.file(
+                      File(
+                        _xFile?.path ?? "",
+                      ),
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity, // -> import qil -> dart:io
+                    ),
             ),
           ),
         ),
@@ -152,7 +201,8 @@ class _AddPageState extends State<AddPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Gap(10),
-            const Center(child: AppText(text: "Where From Do You Give Images?")),
+            const Center(
+                child: AppText(text: "Where From Do You Give Images?")),
             const Gap(20),
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -160,39 +210,48 @@ class _AddPageState extends State<AddPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 InkWell(
-                  onTap: () {pickImage(ImageSource.gallery);popNavigator(context);},
+                  onTap: () {
+                    pickImage(ImageSource.gallery);
+                    popNavigator(context);
+                  },
                   child: GlowContainer(
                     height: 50,
                     width: 100,
                     color: Colors.indigoAccent,
                     borderRadius: BorderRadius.circular(12),
                     child: const Center(
-                        child:
-                        Text("Gallery", style: TextStyle(color: Colors.white))),
+                        child: Text("Gallery",
+                            style: TextStyle(color: Colors.white))),
                   ),
                 ),
                 const SizedBox(
                   width: 20,
                 ),
                 InkWell(
-                  onTap: (){ pickImage(ImageSource.camera);popNavigator(context);},
+                  onTap: () {
+                    pickImage(ImageSource.camera);
+                    popNavigator(context);
+                  },
                   child: GlowContainer(
                     height: 50,
                     width: 100,
                     color: Colors.indigoAccent,
                     borderRadius: BorderRadius.circular(12),
                     child: const Center(
-                        child: Text("Camera", style: TextStyle(color: Colors.white))),
+                        child: Text("Camera",
+                            style: TextStyle(color: Colors.white))),
                   ),
                 ),
               ],
             ),
             const Gap(20),
             InkWell(
-                onTap: (){
+                onTap: () {
                   popNavigator(context);
                 },
-                child: GlowText("Cancle",style: GoogleFonts.rowdies(color: Colors.red,fontSize: 20),glowColor: Colors.red)),
+                child: GlowText("Cancel",
+                    style: GoogleFonts.rowdies(color: Colors.red, fontSize: 20),
+                    glowColor: Colors.red)),
             const Gap(10),
           ],
         ),
@@ -203,25 +262,31 @@ class _AddPageState extends State<AddPage> {
   pickImage(ImageSource source) async {
     _xFile = null;
     _xFile = await _picker.pickImage(source: source);
-    setState(() {
-    });
+    setState(() {});
   }
 
-  void _saveNewAnime(){
-    final newAnime = Anime(null,_name.text,_episode.text,_selectedType.toString(),_xFile?.path);
+  void _saveNewAnime() {
+    final newAnime = Anime(null, _name.text, int.parse(_episode.text),
+        _selectedType.toString(), _xFile?.path, false, int.parse(_season.text));
     SqlHelper.saveAnime(newAnime).then((value) {
-      ScaffoldMessenger.of(context).showSnackBar(showMySnackBar("Saved", "Your anime saved successfully✅", CupertinoColors.activeGreen, ContentType.success));
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>const MyHiddenDrawer()), (route) => false);
+      snackbarScaffold(
+          context,
+          showMySnackBar("Saved", "Your anime saved successfully✅",
+              CupertinoColors.activeGreen, ContentType.success));
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const MyHiddenDrawer()),
+          (route) => false);
     });
     SqlHelper.getAllAnimes();
-    print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO ${newAnime.toString()}");
-  }
-
+    }
 
 }
 
 enum SignTypes {
-  sub, dub, subTVMovie, dubTVMovie,
+  sub,
+  dub,
+  subTVMovie,
+  dubTVMovie,
 }
 
 /// ICONS => Favourite, Watching, Finished, Delete,

@@ -10,9 +10,9 @@ class WatchingScreen extends StatefulWidget {
 class _WatchingScreenState extends State<WatchingScreen> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      body: Center(child: Text("Watch"),),
+      body: Center(child: Text("Watch")),
     );
   }
 }

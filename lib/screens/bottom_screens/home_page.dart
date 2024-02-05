@@ -10,7 +10,6 @@ import 'package:flutter_glow/flutter_glow.dart';
 import 'package:gap/gap.dart';
 import '../../db/sql_helper.dart';
 import '../../model/anime_model.dart';
-import '../../widgets/drawer_hidden.dart';
 import '../../widgets/glow_text.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,6 +20,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _deleteIt(int? id, BuildContext context) {
+    SqlHelper.deleteAllFavouriteAnimes();
     SqlHelper.deleteAnime(id).then((value) {
       setState(() {});
       ScaffoldMessenger.of(context).showSnackBar(showMySnackBar("Deleted",
@@ -78,6 +79,7 @@ class _HomePageState extends State<HomePage> {
       ),
     )..show();
   }
+
   _deleteButton(Anime anime) {
     return GlowButton(
         color: Colors.red,
@@ -90,6 +92,7 @@ class _HomePageState extends State<HomePage> {
           popNavigator(context);
         });
   }
+
   _unDeleteButton() {
     return GlowButton(
         color: Colors.indigoAccent,
@@ -101,6 +104,7 @@ class _HomePageState extends State<HomePage> {
           popNavigator(context);
         });
   }
+
   _allAnimeGet() {
     return FutureBuilder(
       future: SqlHelper.getAllAnimes(),
@@ -117,7 +121,8 @@ class _HomePageState extends State<HomePage> {
                     mainAxisSpacing: 6,
                     childAspectRatio: 1 / 1.5),
                 itemBuilder: (context, index) {
-                  final data = list?[index];
+                  var data = list?[index];
+                  var _iconTapped = true;
                   return GlowContainer(
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(width: 2, color: Colors.white),
@@ -146,8 +151,8 @@ class _HomePageState extends State<HomePage> {
                                         end: Alignment.topCenter,
                                         colors: [
                                       Colors.black.withOpacity(1.0),
-                                      Colors.black.withOpacity(0.7),
-                                      Colors.black.withOpacity(0.5),
+                                      Colors.black.withOpacity(0.8),
+                                      Colors.black.withOpacity(0.6),
                                       Colors.black.withOpacity(0.0),
                                     ])),
                                 child: Center(
@@ -156,15 +161,52 @@ class _HomePageState extends State<HomePage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
+                                      const Gap(25),
                                       AppText(text: data?.name ?? ""),
-                                      AppText(text: '${data?.episodes}')
+                                      AppText(text: "Season:${data?.season}"),
+                                      AppText(text: 'Eps: ${data?.episodes}')
                                     ],
                                   ),
                                 ),
                               ),
                             )),
                             Positioned(
-                                top: 0, right: 0, child: _columIcons(data!)),
+                                top: 0,
+                                right: 0,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black45,
+                                      // color: Colors.white70,
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon:Icon(CupertinoIcons.heart,color: Colors.red,)) ,
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon: const GlowIcon(
+                                                CupertinoIcons.tv,
+                                                color: Colors.indigoAccent)),
+                                        IconButton(
+                                            onPressed: () {},
+                                            icon: const GlowIcon(
+                                                CupertinoIcons.stop,
+                                                color: Colors.yellowAccent)),
+                                        IconButton(
+                                            onPressed: () {
+                                              _showDeleteDialog(data!);
+                                            },
+                                            icon: const GlowIcon(
+                                                CupertinoIcons.delete,
+                                                color: Colors.red)),
+                                      ],
+                                    ),
+                                  ),
+                                )),
                           ]),
                         ),
                       ),
@@ -172,8 +214,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 }),
           );
-        }
-        else if (snapshot.data?.isEmpty == true) {
+        } else if (snapshot.data?.isEmpty == true) {
           return const Center(
               child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -183,52 +224,22 @@ class _HomePageState extends State<HomePage> {
             ],
           ));
         } else {
-          return const Center(child: CupertinoActivityIndicator());
+          return const Center(child: CupertinoActivityIndicator(radius: 15,color: CupertinoColors.activeGreen));
         }
       },
     );
   }
-  _columIcons(Anime anime) {
-    return Padding(
-      padding: const EdgeInsets.all(3.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black45,
-          // color: Colors.white70,
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Column(
-          children: [
-            IconButton(
-                onPressed: () {_saveFavouriteAnime(anime);
-                },
-                icon: const GlowIcon(CupertinoIcons.heart, color: Colors.red)),
-            IconButton(
-                onPressed: () {},
-                icon: const GlowIcon(CupertinoIcons.tv,
-                    color: Colors.indigoAccent)),
-            IconButton(
-                onPressed: () {},
-                icon: const GlowIcon(CupertinoIcons.stop,
-                    color: Colors.yellowAccent)),
-            IconButton(
-                onPressed: () {
-                  _showDeleteDialog(anime);
-                },
-                icon: const GlowIcon(CupertinoIcons.delete, color: Colors.red)),
-          ],
-        ),
-      ),
-    );
-  }
+
   doNothing() {}
+
   void _saveFavouriteAnime(Anime anime) {
-    final newFavouriteAnime =
-        Anime(null, anime.name, anime.episodes, anime.type, anime.image);
-      SqlHelper.saveFavourite(newFavouriteAnime);
+    final newFavouriteAnime = Anime(
+        anime.id, anime.name, anime.episodes, anime.type, anime.image,false,anime.season);
+    SqlHelper.saveFavourite(newFavouriteAnime);
     SqlHelper.getAllFavouriteAnimes();
   }
-  _removeFromFavourites(Anime anime){
+
+  void _removeFromFavourites(Anime anime) {
     SqlHelper.deleteFavouriteAnime(anime.id);
   }
 }

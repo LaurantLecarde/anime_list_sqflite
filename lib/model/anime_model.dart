@@ -1,12 +1,13 @@
 class Anime {
   int? id;
   String? name;
-  String? episodes;
+  int? episodes;
   String? type;
   String? image;
-  bool animTapped = false;
+  int? season;
+  bool animTapped;
 
-  Anime(this.id, this.name, this.episodes, this.type, this.image,);
+  Anime(this.id, this.name, this.episodes, this.type, this.image,this.animTapped,this.season);
 
   Map<String, dynamic> toJson() {
     return {
@@ -15,6 +16,8 @@ class Anime {
       'episodes': episodes,
       'type': type,
       'image': image,
+      'season':season,
+      'animTapped':animTapped ? 1 : 0,
     };
   }
 
@@ -23,6 +26,8 @@ class Anime {
         name = json['name'],
         episodes = json['episodes'],
         type = json['type'],
-        image = json['image'];
+        image = json['image'],
+        season = json['season'],
+        animTapped = json['animTapped']==0;
 }
 

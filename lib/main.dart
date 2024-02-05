@@ -1,3 +1,4 @@
+
 import 'package:anime_list_sqflite/widgets/drawer_hidden.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         primaryColorLight: Colors.yellowAccent,
         useMaterial3: true,
       ),
-      home: const MyHiddenDrawer(),
+      home: MyHiddenDrawer(),
     );
   }
 }
